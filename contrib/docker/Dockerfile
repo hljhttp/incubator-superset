@@ -24,6 +24,30 @@ ENV LANG=C.UTF-8 \
 
 RUN apt-get update -y
 
+
+#INSTALL LIBAIO1 & UNZIP (NEEDED FOR STRONG-ORACLE)
+RUN apt-get update \
+ && apt-get install -y libaio1 \
+ && apt-get install -y build-essential \
+ && apt-get install -y unzip \
+ && apt-get install -y curl
+
+#ADD ORACLE INSTANT CLIENT
+RUN mkdir -p opt/oracle
+ADD ./oracle/linux/ .
+
+RUN unzip instantclient-basic-linux.x64-18.5.0.0.0dbru.zip -d /opt/oracle \
+ && unzip instantclient-sdk-linux.x64-18.5.0.0.0dbru.zip -d /opt/oracle  \
+ && mv /opt/oracle/instantclient_18_5 /opt/oracle/instantclient \
+ && ln -s -f /opt/oracle/instantclient/libclntsh.so.18.5 /opt/oracle/instantclient/libclntsh.so \
+ && ln -s -f /opt/oracle/instantclient/libocci.so.18.5 /opt/oracle/instantclient/libocci.so
+
+ENV LD_LIBRARY_PATH="/opt/oracle/instantclient"
+ENV OCI_HOME="/opt/oracle/instantclient"
+ENV OCI_LIB_DIR="/opt/oracle/instantclient"
+ENV OCI_INCLUDE_DIR="/opt/oracle/instantclient/sdk/include"
+ENV OCI_VERSION=18
+
 # Install dependencies to fix `curl https support error` and `elaying package configuration warning`
 RUN apt-get install -y apt-transport-https apt-utils
 
