@@ -25,6 +25,7 @@ ENV LANG=C.UTF-8 \
 RUN apt-get update -y
 
 
+
 #INSTALL LIBAIO1 & UNZIP (NEEDED FOR STRONG-ORACLE)
 RUN apt-get update \
  && apt-get install -y libaio1 \
@@ -47,6 +48,8 @@ ENV OCI_HOME="/opt/oracle/instantclient"
 ENV OCI_LIB_DIR="/opt/oracle/instantclient"
 ENV OCI_INCLUDE_DIR="/opt/oracle/instantclient/sdk/include"
 ENV OCI_VERSION=18
+
+RUN python -m pip install cx_Oracle --upgrade
 
 # Install dependencies to fix `curl https support error` and `elaying package configuration warning`
 RUN apt-get install -y apt-transport-https apt-utils
